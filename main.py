@@ -49,7 +49,7 @@ def gen_plot():
 
   image_manager.scale(g.files['plot'], g.files['plot'], g.image_height)
 
-if len(sys.argv) != 2: 
+if len(sys.argv) != 2:
     print(f'Usage: {sys.argv[0]} <debug_mode>')
     print('debug_level -->')
     print('\t0 - Supress all messages.')
