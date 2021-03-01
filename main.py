@@ -18,7 +18,7 @@ import config as g
 
 def init_globals():
   g.randomizer = Randomizer()
-  g.debug = Debugger() 
+  g.debug = Debugger()
   g.console = Console()
   g.analyzer = Analyzer()
   g.modeller = Modeller(g.analyzer)

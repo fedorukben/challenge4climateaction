@@ -112,23 +112,85 @@ class Analyzer(object):
     image_manager.scale('imgs/f.png', 'imgs/f.png', 250)
     self.debug.prn(self, 'F distribution created.')
   
-class Dataset(object):
-  def __init__(self, num_of_inputs):
-    self.debug = Debugger()
-    self.n = num_of_inputs
+class DataSet(object):
+  def __init__(self, data):
+    self.data = pd.DataFrame(data) 
+    g.debug.prn(self, "DataSet initialized.")
+  def __str__(self):
+    g.debug.prn(self, "Convert DataSet to string.")
+    return self.data.to_string()
+    # this will be your print code
   def class_name(self):
-    return "Dataset"
-  def get_output(self):
-    pass # returns list of outputs
-  def get_input(self):
-    pass # returns list of list of inputs (2D)
-  def get_vars(self):
-    pass # returns list of tuples (x1,x2,...,xn,y)
-  def add_entry(self):
+    return "DataSet"
+  def get_cols(self, col_names):
+    if type(col_names) != list:
+      g.debug.prn(self, "Got single column.")
+      return self.data[col_names].tolist()
+    if col_names == []:
+      g.debug.prn(self, "You need to pass something into get_cols().", 1)
+    lst = [] # [[datafromc1], [datafromc2]]
+    for col in col_names:
+      lst.append(self.data[col].tolist())
+    g.debug.prn(self, "Got list of columns.")
+    return lst
+    # return [1,2,5,3,0,-4]
+  def get_rows(self, indices):
+    if type(indices) != list:
+      return self.data[indices].tolist()
+    if indices == []:
+      g.debug.prn(self, "You need to pass something into get_cols().", 1)
+    lst = [] # [[datafromc1], [datafromc2]]
+    for row in indices:
+      lst.append(self.data[row].tolist())
+    return lst
+  def get_input_cols(self): # dependant variables 
+    self.get_cols(self.get_label()[:-1])
+  def get_output_col(self): # independant variables
+    self.get_cols(self.get_label()[-1])
+  def get_label(self):
+    return list(self.data)
+    # ["Temp", "Sea Level Rise"]
+  def get_data(self):
+    return self.get_cols(self.get_label())
+  def get_datum(self, col_names, indices): #TODO:
+    if type(indices) != list and type(col_names) != list:
+      return self.get_cols(col_names)[indices]
+    lst = []
+    for col, index in zip(col_names, indices): 
+      lst.append(self.get_cols(col)[index])
+    return lst
+    # dataset.get_datum(["x2", "x1"],[5, 3])
+    # --> [-9, 3]
+# https://towardsdatascience.com/the-ultimate-guide-to-data-cleaning-3969843991d4
+class Cleaner(object):
+  def __init__(self):
     pass
-  def add_output(self):
-    pass # want to add a value to the dataset
-  def add_input(self, value, index):
+  def class_name(self):
+    return "Cleaner"
+  def delete_rows(self, ds, rows):
+    for row in rows:
+      pass
+      # Delete row code. 
+  def replace_values(self, ds):
+    pass
+  def reformat(self, ds):
+    pass
+  def delete_duplicates(self, ds):
+    pass
+  def convert_types(self, ds, type_to):
+    pass
+  def workflow(self, ds):
+    self._inspect(ds)
+    self._clean(ds)
+    self._verify(ds)
+    self._report(ds)
+  def _inspect(self, ds):
+    pass
+  def _clean(self, ds):
+    pass
+  def _verify(self, ds):
+    pass
+  def _report(self, ds):
     pass
   
 
