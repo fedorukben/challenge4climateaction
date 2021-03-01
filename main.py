@@ -69,17 +69,7 @@ gen_plot()
 
 #sg.theme('Dark Red 5')
 
-g.gui.set_title(g.gui_title)
-g.gui.text('MatPlotLib Figure')
-g.gui.next()
-g.gui.image(g.files['plot'])
-g.gui.next()
-g.gui.text('Show: ')
-g.gui.input('Show')
-g.gui.next()
-g.gui.button('Exit')
-g.gui.button('Submit')
-
+g.gui.standard()
 g.gui.compile()
 g.gui.loop()
 g.gui.close()

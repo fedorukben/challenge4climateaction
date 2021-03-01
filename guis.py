@@ -47,12 +47,13 @@ class GUI(object):
       self.next()
       self.button('Display')
       self.button('Peek')
+      self.button('Generate')
       self.next()
       self.button('Exit Program')
       self.button('Exit Interactive Mode')
     else:
       self.set_title(g.gui_title)
-      self.text('Standard Mode')
+      self.text('Prompt Mode')
       self.next()
       self.image(self.plot_shown)
       self.next()
@@ -119,10 +120,16 @@ class GUI(object):
             image_browser.close()
           elif event == 'Peek':
             peek_stats = SelectPopUp('Peek Statistics')
-            peek_stats.set_text('Select image from below:')
+            peek_stats.set_text('Select peekable from below:')
             peek_stats.show()
             peek_stats.loop()
             peek_stats.close()
+          elif event == 'Generate':
+            popup = GenerateVisualPopUp('Generate Visual')
+            popup.set_text('Select visual to generate:')
+            popup.show()
+            popup.loop()
+            popup.close()
     else:
       g.debug.prn(self, 'GUI not compiled.', 1)
   def clear(self):
@@ -235,7 +242,6 @@ class SelectPopUp(PopUp):
   def class_name(self):
     return 'SelectPopUp'
   def show(self):
-    print(g.stats_to_codes.keys())
     self.layout = [
       [sg.Text(self.text)],
       [sg.Combo([*g.stats_to_codes], key='Combo')],
@@ -252,13 +258,41 @@ class SelectPopUp(PopUp):
         break
       elif event == 'Submit':
         if not values['Combo'] == None:
-          print(values['Combo'])
           code = g.stats_to_codes[values['Combo']]
           self.close()
           g.console.read(f'v:{code}')
           break
         else:
           g.debug.prn(self, 'No statistic selected.', 1)
+
+class GenerateVisualPopUp(PopUp):
+  def __init__(self, title):
+    super().__init__(title)
+  def class_name(self):
+    return 'GenerateVisualPopUp'
+  def show(self):
+    self.layout = [
+      [sg.Text(self.text)],
+      [sg.Combo([*g.visuals], key='Combo')],
+      [sg.Button('Submit')]
+    ]
+    self.window = sg.Window(self.title, self.layout)
+    g.debug.prn(self, 'Message shown.')
+  def loop(self):
+    g.debug.prn(self, 'Loop commenced.')
+    while True:
+      event, values = self.window.read()
+      if event == sg.WIN_CLOSED:
+        self.close()
+        break
+      elif event == 'Submit':
+        if not values['Combo'] == None:
+          code = g.visuals[values['Combo']]
+          self.close()
+          g.console.read(f'g:{code}')
+          break
+        else:
+          g.debug.prn(self, 'No visual selected.', 1)
 
 class Console(object):
   def __init__(self):
@@ -296,14 +330,22 @@ class Console(object):
       elif header == 'g':
         if body == 'ls-f':
           g.analyzer.f_dist(LinearModel, 100)
-          g.debug.prn(self, 'Generated f-distribution.')
-        elif body == 'ls':
+          g.debug.prn(self, 'Generated least squares f-distribution.')
+        elif body == 'ls-reg':
           g.modeller.gen_least_squares(g.x,g.y)
-          g.debug.prn(self, 'Generated least squares model.')
+          g.debug.prn(self, 'Generated least squares regression.')
+        elif body == 'ls-ssr':
+          g.analyzer.ssr_curve(g.x, g.y)
+          g.debug.prn(self, 'Generated least squares S.S. residuals.')
         else:
           g.debug.prn(self, 'File to generate not recognized.')
           return
-        
+      elif header == 'q':
+          if body == 'q':
+            g.debug.prn(self, "Exit triggered.")
+            quit()
+          else:
+            g.debug.prn(self,'Command not recognized. Did you mean?: q:q', 1)
       elif header == 'v':
         text = ''
         if body == 'ls-a':

@@ -3,6 +3,7 @@ from utils import ImageManager
 from model import LinearModel
 from visualize import Plotter
 from visualize import HistogramSketch
+from visualize import ScatterSketch
 import numpy as np
 import config as g
 
@@ -11,7 +12,7 @@ class Analyzer(object):
     self.debug = Debugger()
   def class_name(self):
     return "Analyzer"
-  def get_confusion_matrix(self): # Harry
+  def get_confusion_matrix(self, ds, model, margin): # Harry
     pass
   def get_specificity(self): # Harry
     pass
@@ -48,6 +49,7 @@ class Analyzer(object):
     plotter = Plotter()
     plotter.set_title('Receiver Operating Characteristic')
     plotter.set_axis_labels('')
+    plotter.set_output_filename() #TODO: Fill filename
     plotter.close()
     pass # Save the image as "roc.png"
   def get_ss_res(self, coords, f):
@@ -55,10 +57,22 @@ class Analyzer(object):
     for coord in coords:
       ss += (coord[1] - f(coord[0])) ** 2
     return ss
-  def ssr_curve(self, plotter_func, slopes):
-    # TODO: Sum of squared residuals plot
-    # ssr.png
-    pass
+  def ssr_curve(self, x, y, slopes=[0.1, 0.2, 0.3, 0.4, 0.5, 0.75, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 7.5, 10.0]):
+    ssrs = []
+    for slope in slopes:
+        yint = (np.mean(y) - slope * np.mean(x))
+        ssrs.append(self.get_ss_res(zip(x,y), lambda val : slope * val + yint))
+    plotter = Plotter()
+    plotter.set_title('Sum of Squared Residuals')
+    plotter.set_axis_labels('Slope Selected', 'Sum of Squared Residual')
+    plotter.set_output_filename(g.files['ls-ssr'])
+    ssr_plot = ScatterSketch()
+    ssr_plot.add_x(slopes)
+    ssr_plot.add_y(ssrs)
+    plotter.load(ssr_plot)
+    plotter.save()
+    plotter.close()
+    g.debug.prn(self, 'Drawn Sum of Squared Residuals Plot')
   def least_squares_slope_yint_eqn(self, x, y):
     n = len(x)
     sum_x = sum(x)
