@@ -235,10 +235,10 @@ class SelectPopUp(PopUp):
   def class_name(self):
     return 'SelectPopUp'
   def show(self):
+    print(g.stats_to_codes.keys())
     self.layout = [
       [sg.Text(self.text)],
-      [sg.Input(do_not_clear=True, enable_events=True, key='In')],
-      [sg.Listbox(values=g.stats_to_codes.keys(), key='Peek', size=(30,6), enable_events=True)],
+      [sg.Combo([*g.stats_to_codes], key='Combo')],
       [sg.Button('Submit')]
     ]
     self.window = sg.Window(self.title, self.layout)
@@ -251,10 +251,10 @@ class SelectPopUp(PopUp):
         self.close()
         break
       elif event == 'Submit':
-        if not values['Peek'] == None:
-          #self.close()
-          print(values['Peek'])
-          code = g.stats_to_codes[values['Peek']]
+        if not values['Combo'] == None:
+          print(values['Combo'])
+          code = g.stats_to_codes[values['Combo']]
+          self.close()
           g.console.read(f'v:{code}')
           break
         else:
@@ -307,9 +307,17 @@ class Console(object):
       elif header == 'v':
         text = ''
         if body == 'ls-a':
-          text = f'slope = {g.modeller.linear(0).get_slope()}'
+          if os.path.exists(g.files['least-squares']):
+            text = f'slope = {g.modeller.linear(0).get_slope()}'
+          else:
+            g.debug.prn(self,'Least Squares model has not been generated.', 1)
+            return
         elif body == 'ls-b':
-          text = f'yint = {g.modeller.linear(0).get_yint()}'
+          if os.path.exists(g.files['least-squares']):
+            text = f'yint = {g.modeller.linear(0).get_yint()}'
+          else:
+            g.debug.prn(self, 'Least Squares model has not beeng generated.', 1)
+            return
         elif body == 'specif':
           text = f'specificity = {g.analyzer.get_specificity()}'
         elif body == 'sensit':

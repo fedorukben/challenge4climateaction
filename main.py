@@ -16,6 +16,8 @@ from visualize import ScatterSketch
 
 import config as g
 
+import sys
+
 def init_globals():
   g.randomizer = Randomizer()
   g.debug = Debugger()
@@ -46,6 +48,17 @@ def gen_plot():
   # g.analyzer.f_dist(LinearModel, 100)
 
   image_manager.scale(g.files['plot'], g.files['plot'], g.image_height)
+
+if len(sys.argv) != 2: 
+    print(f'Usage: {sys.argv[0]} <debug_mode>')
+    print('debug_level -->')
+    print('\t0 - Supress all messages.')
+    print('\t1 - Show errors and warnings.')
+    print('\t2 - Show log of relevant actions.')
+    print('\t3 - Show all messages.')
+    quit()
+
+g.debug_level = int(sys.argv[1])
 
 plotter = Plotter()
 init_globals()

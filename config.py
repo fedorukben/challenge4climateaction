@@ -1,7 +1,7 @@
 x = []
 y = []
 sketch_sets = {}
-debug_level = 1
+debug_level = 2
 x_clr = 'k'
 y_clr = 'k'
 x_lbl = 'X'
