@@ -26,7 +26,8 @@ visuals = {
   'Main Graph': 'p',
   'Least Squares - Regression': 'ls-reg',
   'Least Squares - F-Distribution': 'ls-f',
-  'Least Squares - Sum of Squared Residuals': 'ls-ssr'
+  'Least Squares - Sum of Squared Residuals': 'ls-ssr',
+  'Logistic - Regression': 'lo-reg',
 }
 graph_titles = {
   'main': 'Main Graph',
@@ -36,8 +37,9 @@ files = {
   'least-squares': 'imgs/ls-reg.png',
   'f-dist': 'imgs/ls-f.png',
   'ls-ssr': 'imgs/ls-ssr.png',
+  'logistic-regression': "imgs/lo-reg.png",
 }
 stats_to_codes = {
   'Least Squares Slope': 'ls-a',
-  'Least Squares Y-Intercept': 'ls-b'
+  'Least Squares Y-Intercept': 'ls-b',
 }

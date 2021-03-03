@@ -337,6 +337,9 @@ class Console(object):
         elif body == 'ls-ssr':
           g.analyzer.ssr_curve(g.x, g.y)
           g.debug.prn(self, 'Generated least squares S.S. residuals.')
+        elif body == 'lo-reg':
+          g.modeller.get_logistic(g.x, g.y)
+          g.debug.prn(self, 'Generated logistic regression.')
         else:
           g.debug.prn(self, 'File to generate not recognized.')
           return
