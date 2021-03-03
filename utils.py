@@ -25,6 +25,8 @@ class Math(object):
         for val in vals:
           sum += self.function(val)
         return sum
+    def logit(self, p):
+      return math.log(p / (1 - p))
 
 class Debugger(object):
     def __init__(self):
