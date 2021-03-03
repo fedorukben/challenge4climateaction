@@ -8,66 +8,97 @@ import numpy as np
 import config as g
 from sklearn.metrics import confusion_matrix
 
+
 class Analyzer(object):
-  def __init__(self):
-    self.debug = Debugger()
-  def class_name(self):
-    return "Analyzer"
-  def get_confusion_matrix(self, model, threshold): # Harry
-    # model --> Model
-    ds = model.get_dataset()
-    y_true = ds.get_output_col() # --> [5,3,8,1,6,0] = y_true
-    y_pred = []
-    for x in ds.get_input_cols():
-	    y_pred.append(model.get_f()(x))
-    # for loop:: y_pred = model.get_f()(x) [2,6,-1,6,3,5]
-    #                     f(x)
-    #                           vs.  y
-    tp, tn, fp, fn = []
-    for y_p, y_t in zip(y_pred, y_true):
-      if y_t > threshold:
-        if y_p > threshold:
-          tp += 1
-        else:
-          fn += 1
-      else:
-        if y_p > threshold:
-          fp += 1
-        else:
-          tn += 1
-    return [[tp, fp], [fn, tn]]
-  def get_tp(self, model, threshold):
-    return self.get_confusion_matrix(model, threshold)[0][0]
-  def get_fp(self, model, threshold):
-    return self.get_confusion_matrix(model, threshold)[1][0]
-  def get_fn(self, model, threshold):
-    pass
-  def get_tn(self, model, threshold):
-    pass
-  def get_specificity(self, model, threshold): # Harry
-    # https://en.wikipedia.org/wiki/Sensitivity_and_specificity
-    # tn / (tn + fp)
-    tn = self.get_tn()
-    fp = self.get_fp()
-    return (tn / (tn + fp))
-  def get_sensitivity(self): # Harry
-    pass
-  def get_precision(self): # Harry
-    pass 
-  def get_recall(self): # Harry
-    pass
-  def get_accuracy(self): # Harry
-    pass
-  def get_fallout(self): # Harry
-    pass
-  def get_bias(self): # Harry
-    pass
-  def get_mean(self): # Harry
-    pass
+    def __init__(self):
+        self.debug = Debugger()
+
+    def class_name(self):
+        return "Analyzer"
+
+    def get_confusion_matrix(self, model, threshold):  # Harry
+        # model --> Model
+        ds = model.get_dataset()
+        y_true = ds.get_output_col()  # --> [5,3,8,1,6,0] = y_true
+        y_pred = []
+        for x in ds.get_input_cols():
+            y_pred.append(model.get_f()(x))
+        #                     f(x)
+        #                           vs.  y
+        tp, tn, fp, fn = []
+        for y_p, y_t in zip(y_pred, y_true):
+            if y_t > threshold:
+                if y_p > threshold:
+                    tp += 1
+                else:
+                    fn += 1
+            else:
+                if y_p > threshold:
+                    fp += 1
+                else:
+                    tn += 1
+        return [[tp, fp], [fn, tn]]
+
+    def get_tp(self, model, threshold):
+        return self.get_confusion_matrix(model, threshold)[0][0]
+
+    def get_fp(self, model, threshold):
+        return self.get_confusion_matrix(model, threshold)[1][0]
+
+    def get_fn(self, model, threshold):
+        return self.get_confusion_matrix(model, threshold)[0][1]
+
+    def get_tn(self, model, threshold):
+        return self.get_confusion_matrix(model, threshold)[1][1]
+
+    def get_specificity(self, model, threshold):  # Harry
+        # https://en.wikipedia.org/wiki/Sensitivity_and_specificity
+        tn = self.get_tn()
+        fp = self.get_fp()
+        return (tn / (tn + fp))
+
+    def get_sensitivity(self):  # Harry
+        tp = self.get_tp()
+        fn = self.get_fn()
+        return (tp / (tp + fn))
+
+    def get_precision(self):  # Harry
+        tp = self.get_tp()
+        fp = self.get_fp()
+        return (tp / (tp + fp))
+
+    def get_recall(self):  # Harry
+        tp = self.get_tp()
+        fn = self.get_fn()
+        return (tp / (tp + fn))
+
+    def get_accuracy(self):  # Harry
+        tp = self.get_tp()
+        tn = self.get_tn()
+        fp = self.get_fp()
+        fn = self.get_fn()
+        return ((tp + fn)/(tp + tn + fp + fn))
+
+    def get_fallout(self):  # Harry
+        fp = self.get_fp()
+        tn = self.get_tn()
+        return (fp/(fp + tn))
+
+    def get_bias(self):  # Harry
+        pass
+
+    def get_mean(self):  # Harry
+        pass
+
+
+
   def get_auc(self): # Harry
     pass
   def get_p_by_f_dist(self): # Harry
     pass
+
+
+	
   def get_variance(self, coords, f):
     return self.get_ss_res(coords, f) / len(coords[0])
   def get_r_sq(self, model):
