@@ -127,6 +127,7 @@ class Analyzer(object):
     for slope in slopes:
         yint = (np.mean(y) - slope * np.mean(x))
         ssrs.append(self.get_ss_res(zip(x,y), lambda val : slope * val + yint))
+    image_manager = ImageManager()
     plotter = Plotter()
     plotter.set_title('Sum of Squared Residuals')
     plotter.set_axis_labels('Slope Selected', 'Sum of Squared Residual')
@@ -138,6 +139,7 @@ class Analyzer(object):
     plotter.save()
     plotter.close()
     g.debug.prn(self, 'Drawn Sum of Squared Residuals Plot')
+    image_manager.scale(g.files['ls-ssr'], g.files['ls-ssr'], 250)
   def least_squares_slope_yint_eqn(self, x, y):
     n = len(x)
     sum_x = sum(x)
@@ -156,7 +158,7 @@ class Analyzer(object):
 
     plotter.set_title('F Distribution')
     plotter.set_axis_labels('Frequency', 'F Score')
-    plotter.set_output_filename('imgs/f.png')
+    plotter.set_output_filename(g.files['least-squares-f'])
 
     histogram = HistogramSketch()
     for i in range(trials):
@@ -188,7 +190,7 @@ class Analyzer(object):
     plotter.load(histogram)
     plotter.save()
     plotter.close()
-    image_manager.scale('imgs/f.png', 'imgs/f.png', 250)
+    image_manager.scale(g.files['least-squares-f'], g.files['least-squares-f'], 250)
     self.debug.prn(self, 'F distribution created.')
 
 class DataSet(object):

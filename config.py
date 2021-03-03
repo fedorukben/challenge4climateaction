@@ -35,11 +35,12 @@ graph_titles = {
 files = {
   'plot': 'imgs/p.png',
   'least-squares': 'imgs/ls-reg.png',
-  'f-dist': 'imgs/ls-f.png',
+  'least-squares-f': 'imgs/ls-f.png',
   'ls-ssr': 'imgs/ls-ssr.png',
   'logistic-regression': "imgs/lo-reg.png",
 }
 stats_to_codes = {
-  'Least Squares Slope': 'ls-a',
-  'Least Squares Y-Intercept': 'ls-b',
+  'Least Squares - Slope': 'ls-a',
+  'Least Squares - Y-Intercept': 'ls-b',
+  'Least Squares - R Squared': 'ls-rsq',
 }
