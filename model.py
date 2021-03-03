@@ -39,8 +39,6 @@ class Modeller(object):
   def get_logistic(self, x, y):
     i = len(self.logistic_models) + 1
     m, b = g.analyzer.least_squares_slope_yint_eqn(x, y)
-    line = LinearModel(lambda x : m * x + b, x, y, i)
-    print(line)
     f = lambda x : (math.e ** ((m * x) + (-m * b))) / (1 + (math.e ** ((m * x) + (-m * b))))
     logistic_model = LogisticModel(f, x, y, i)
     logistic_model.plot()
@@ -170,7 +168,6 @@ class LogisticModel(Model):
     y_vals = []
     for x in range(min_x * 100, max_x * 100):
       y_adjust = self.f(x / 100) * (max_y - min_y) + min_y
-      print(f'{x / 100} --> {self.f(x / 100)}')
       x_vals.append([x / 100])
       y_vals.append([y_adjust])
     sketches.append(SmoothSketch())

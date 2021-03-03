@@ -10,85 +10,85 @@ from sklearn.metrics import confusion_matrix
 
 
 class Analyzer(object):
-    def __init__(self):
-        self.debug = Debugger()
+  def __init__(self):
+    self.debug = Debugger()
 
-    def class_name(self):
-        return "Analyzer"
+  def class_name(self):
+    return "Analyzer"
 
-    def get_confusion_matrix(self, model, threshold):  # Harry
-        # model --> Model
-        ds = model.get_dataset()
-        y_true = ds.get_output_col()  # --> [5,3,8,1,6,0] = y_true
-        y_pred = []
-        for x in ds.get_input_cols():
-            y_pred.append(model.get_f()(x))
-        #                     f(x)
-        #                           vs.  y
-        tp, tn, fp, fn = []
-        for y_p, y_t in zip(y_pred, y_true):
-            if y_t > threshold:
-                if y_p > threshold:
-                    tp += 1
-                else:
-                    fn += 1
-            else:
-                if y_p > threshold:
-                    fp += 1
-                else:
-                    tn += 1
-        return [[tp, fp], [fn, tn]]
+  def get_confusion_matrix(self, model, threshold):
+    # model --> Model
+    ds = model.get_dataset()
+    y_true = ds.get_output_col()  # --> [5,3,8,1,6,0] = y_true
+    y_pred = []
+    for x in ds.get_input_cols():
+      y_pred.append(model.get_f()(x))
+    #                     f(x)
+    #                           vs.  y
+    tp, tn, fp, fn = []
+    for y_p, y_t in zip(y_pred, y_true):
+      if y_t > threshold:
+        if y_p > threshold:
+          tp += 1
+        else:
+          fn += 1
+      else:
+        if y_p > threshold:
+          fp += 1
+        else:
+          tn += 1
+      return [[tp, fp], [fn, tn]]
 
-    def get_tp(self, model, threshold):
-        return self.get_confusion_matrix(model, threshold)[0][0]
+  def get_tp(self, model, threshold):
+      return self.get_confusion_matrix(model, threshold)[0][0]
 
-    def get_fp(self, model, threshold):
-        return self.get_confusion_matrix(model, threshold)[1][0]
+  def get_fp(self, model, threshold):
+      return self.get_confusion_matrix(model, threshold)[1][0]
 
-    def get_fn(self, model, threshold):
-        return self.get_confusion_matrix(model, threshold)[0][1]
+  def get_fn(self, model, threshold):
+      return self.get_confusion_matrix(model, threshold)[0][1]
 
-    def get_tn(self, model, threshold):
-        return self.get_confusion_matrix(model, threshold)[1][1]
+  def get_tn(self, model, threshold):
+      return self.get_confusion_matrix(model, threshold)[1][1]
 
-    def get_specificity(self, model, threshold):  # Harry
-        # https://en.wikipedia.org/wiki/Sensitivity_and_specificity
-        tn = self.get_tn()
-        fp = self.get_fp()
-        return (tn / (tn + fp))
+  def get_specificity(self, model, threshold):  # Harry
+      # https://en.wikipedia.org/wiki/Sensitivity_and_specificity
+      tn = self.get_tn()
+      fp = self.get_fp()
+      return (tn / (tn + fp))
 
-    def get_sensitivity(self):  # Harry
-        tp = self.get_tp()
-        fn = self.get_fn()
-        return (tp / (tp + fn))
+  def get_sensitivity(self):  # Harry
+      tp = self.get_tp()
+      fn = self.get_fn()
+      return (tp / (tp + fn))
 
-    def get_precision(self):  # Harry
-        tp = self.get_tp()
-        fp = self.get_fp()
-        return (tp / (tp + fp))
+  def get_precision(self):  # Harry
+      tp = self.get_tp()
+      fp = self.get_fp()
+      return (tp / (tp + fp))
 
-    def get_recall(self):  # Harry
-        tp = self.get_tp()
-        fn = self.get_fn()
-        return (tp / (tp + fn))
+  def get_recall(self):  # Harry
+      tp = self.get_tp()
+      fn = self.get_fn()
+      return (tp / (tp + fn))
 
-    def get_accuracy(self):  # Harry
-        tp = self.get_tp()
-        tn = self.get_tn()
-        fp = self.get_fp()
-        fn = self.get_fn()
-        return ((tp + fn)/(tp + tn + fp + fn))
+  def get_accuracy(self):  # Harry
+      tp = self.get_tp()
+      tn = self.get_tn()
+      fp = self.get_fp()
+      fn = self.get_fn()
+      return ((tp + fn)/(tp + tn + fp + fn))
 
-    def get_fallout(self):  # Harry
-        fp = self.get_fp()
-        tn = self.get_tn()
-        return (fp/(fp + tn))
+  def get_fallout(self):  # Harry
+      fp = self.get_fp()
+      tn = self.get_tn()
+      return (fp/(fp + tn))
 
-    def get_bias(self):  # Harry
-        pass
+  def get_bias(self):  # Harry
+       pass
 
-    def get_mean(self):  # Harry
-        pass
+  def get_mean(self):  # Harry
+       pass
 
 
 
@@ -98,7 +98,7 @@ class Analyzer(object):
     pass
 
 
-	
+
   def get_variance(self, coords, f):
     return self.get_ss_res(coords, f) / len(coords[0])
   def get_r_sq(self, model):
@@ -162,10 +162,10 @@ class Analyzer(object):
     for i in range(trials):
       x_vals = g.randomizer.random_list(g.points_to_gen, g.lower_x_bound, g.upper_x_bound)
       y_vals = g.randomizer.random_list(g.points_to_gen, g.lower_y_bound, g.upper_y_bound)
-      
+
       if model_type == LinearModel:
         slope, yint = self.least_squares_slope_yint_eqn(x_vals, y_vals)
-        func = lambda x : slope * x + yint 
+        func = lambda x : slope * x + yint
       else:
         g.debug.prn(self, 'Incompatible model type.', 1)
         break
@@ -175,7 +175,7 @@ class Analyzer(object):
       p_fit = 2 # TODO: Update for Dataframe
       p_mean = 1 # ""
       n = len(x_vals)
-      
+
       if ss_fit == 0 or (n - p_fit) == 0 or (p_fit - p_mean) == 0:
         self.debug.prn(self, 'F distribution cannot divide by zero.', 1)
         continue
@@ -184,16 +184,16 @@ class Analyzer(object):
 
       histogram.add_x(numerator / denominator)
       histogram.set_bins()
-    
+
     plotter.load(histogram)
     plotter.save()
     plotter.close()
     image_manager.scale('imgs/f.png', 'imgs/f.png', 250)
     self.debug.prn(self, 'F distribution created.')
-  
+
 class DataSet(object):
   def __init__(self, data):
-    self.data = pd.DataFrame(data) 
+    self.data = pd.DataFrame(data)
     g.debug.prn(self, "DataSet initialized.")
   def __str__(self):
     g.debug.prn(self, "Convert DataSet to string.")
@@ -222,7 +222,7 @@ class DataSet(object):
     for row in indices:
       lst.append(self.data[row].tolist())
     return lst
-  def get_input_cols(self): # dependant variables 
+  def get_input_cols(self): # dependant variables
     self.get_cols(self.get_label()[:-1])
   def get_output_col(self): # independant variables
     self.get_cols(self.get_label()[-1])
@@ -235,7 +235,7 @@ class DataSet(object):
     if type(indices) != list and type(col_names) != list:
       return self.get_cols(col_names)[indices]
     lst = []
-    for col, index in zip(col_names, indices): 
+    for col, index in zip(col_names, indices):
       lst.append(self.get_cols(col)[index])
     return lst
     # dataset.get_datum(["x2", "x1"],[5, 3])
@@ -249,7 +249,7 @@ class Cleaner(object):
   def delete_rows(self, ds, rows):
     for row in rows:
       pass
-      # Delete row code. 
+      # Delete row code.
   def replace_values(self, ds):
     pass
   def reformat(self, ds):
@@ -271,7 +271,7 @@ class Cleaner(object):
     pass
   def _report(self, ds):
     pass
-  
+
 
 '''
 
@@ -298,6 +298,6 @@ y=ax+bz+c
 # Ben     --> Models
 
 # Tasks:
-# Dataset hooked up w visualize. 
+# Dataset hooked up w visualize.
 # Analyzer
 # Models
