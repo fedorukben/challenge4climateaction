@@ -377,9 +377,21 @@ class Console(object):
           else:
             g.debug.prn(self, 'Least Squares model has not been generated.', 1)
             return
+        elif body == 'ls-var':
+          if os.path.exists(g.files['least-squares']):
+            text = f'variance = {g.analyzer.get_variance(g.modeller.linear(0))}'
+          else:
+            g.debug.prn(self, 'Least Squares model has not been generated.', 1)
+            return
         elif body == 'lo-rsq':
           if os.path.exists(g.files['logistic-regression']):
             text = f'R^2 = {g.analyzer.get_r_sq(g.modeller.logistic(0))}'
+          else:
+            g.debug.prn(self, 'Logistic model has not been generated.', 1)
+            return
+        elif body == 'lo-var':
+          if os.path.exists(g.files['logistic-regression']):
+            text = f'variance = {g.analyzer.get_variance(g.modeller.logistic(0))}'
           else:
             g.debug.prn(self, 'Logistic model has not been generated.', 1)
             return
@@ -397,8 +409,6 @@ class Console(object):
           text = f'fallout = {g.analyzer.get_fallout()}'
         elif body == 'bias':
           text = f'bias = {g.analyzer.get_bias()}'
-        elif body == 'var':
-          text = f'variance = {g.analyzer.get_variance()}'
         elif body == 'cm':
           text = f'confusion matrix = {g.analyzer.get_confusion_matrix()}'
         elif body == 'auc':

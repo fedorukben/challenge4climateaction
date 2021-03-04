@@ -12,10 +12,8 @@ from sklearn.metrics import confusion_matrix
 class Analyzer(object):
   def __init__(self):
     self.debug = Debugger()
-
   def class_name(self):
     return "Analyzer"
-
   def get_confusion_matrix(self, model, threshold):
     # model --> Model
     ds = model.get_dataset()
@@ -38,69 +36,57 @@ class Analyzer(object):
         else:
           tn += 1
       return [[tp, fp], [fn, tn]]
-
   def get_tp(self, model, threshold):
       return self.get_confusion_matrix(model, threshold)[0][0]
-
   def get_fp(self, model, threshold):
       return self.get_confusion_matrix(model, threshold)[1][0]
-
   def get_fn(self, model, threshold):
       return self.get_confusion_matrix(model, threshold)[0][1]
-
   def get_tn(self, model, threshold):
       return self.get_confusion_matrix(model, threshold)[1][1]
-
   def get_specificity(self, model, threshold):  # Harry
       # https://en.wikipedia.org/wiki/Sensitivity_and_specificity
       tn = self.get_tn()
       fp = self.get_fp()
       return (tn / (tn + fp))
-
   def get_sensitivity(self):  # Harry
       tp = self.get_tp()
       fn = self.get_fn()
       return (tp / (tp + fn))
-
   def get_precision(self):  # Harry
       tp = self.get_tp()
       fp = self.get_fp()
       return (tp / (tp + fp))
-
   def get_recall(self):  # Harry
       tp = self.get_tp()
       fn = self.get_fn()
       return (tp / (tp + fn))
-
   def get_accuracy(self):  # Harry
       tp = self.get_tp()
       tn = self.get_tn()
       fp = self.get_fp()
       fn = self.get_fn()
       return ((tp + fn)/(tp + tn + fp + fn))
-
   def get_fallout(self):  # Harry
       fp = self.get_fp()
       tn = self.get_tn()
       return (fp/(fp + tn))
-
   def get_bias(self):  # Harry
        pass
-
   def get_mean(self):  # Harry
        pass
-
-
-
   def get_auc(self): # Harry
     pass
   def get_p_by_f_dist(self): # Harry
     pass
-
-
-
-  def get_variance(self, coords, f):
-    return self.get_ss_res(coords, f) / len(coords[0])
+  def get_variance(self, model):
+    x_vals = model.get_training_x()
+    x_av = np.mean(x_vals)
+    f = model.get_f()
+    sst = 0
+    for x in x_vals:
+      sst += (x - x_av) ** 2
+    return sst / len(x_vals)
   def get_r_sq(self, model):
     y_av = np.mean(model.get_training_y())
     f = model.get_f()
@@ -109,6 +95,7 @@ class Analyzer(object):
     for x, y in zip(model.get_training_x(), model.get_training_y()):
       ss_res += (y - f(x)) ** 2
       ss_tot += (y - y_av) ** 2
+    g.debug.prn(self, 'Variance generated.')
     return 1 - (ss_res / ss_tot)
   def plot_roc(self):
     plotter = Plotter()

@@ -43,5 +43,7 @@ stats_to_codes = {
   'Least Squares - Slope': 'ls-a',
   'Least Squares - Y-Intercept': 'ls-b',
   'Least Squares - R Squared': 'ls-rsq',
+  'Least Squares - Variance': 'ls-var',
   'Logistic - R Squared': 'lo-rsq',
+  'Logistic - Variance': 'lo-var',
 }
