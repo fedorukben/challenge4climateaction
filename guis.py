@@ -377,6 +377,12 @@ class Console(object):
           else:
             g.debug.prn(self, 'Least Squares model has not been generated.', 1)
             return
+        elif body == 'lo-rsq':
+          if os.path.exists(g.files['least-squares']):
+            text = f'yint = {g.analyzer.get_r_sq(g.modeller.logistic(0))}'
+          else:
+            g.debug.prn(self, 'Logistic model has not been generated.', 1)
+            return
         elif body == 'specif':
           text = f'specificity = {g.analyzer.get_specificity()}'
         elif body == 'sensit':
