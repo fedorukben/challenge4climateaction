@@ -373,13 +373,13 @@ class Console(object):
             return
         elif body == 'ls-rsq':
           if os.path.exists(g.files['least-squares']):
-            text = f'yint = {g.analyzer.get_r_sq(g.modeller.linear(0))}'
+            text = f'R^2 = {g.analyzer.get_r_sq(g.modeller.linear(0))}'
           else:
             g.debug.prn(self, 'Least Squares model has not been generated.', 1)
             return
         elif body == 'lo-rsq':
-          if os.path.exists(g.files['least-squares']):
-            text = f'yint = {g.analyzer.get_r_sq(g.modeller.logistic(0))}'
+          if os.path.exists(g.files['logistic-regression']):
+            text = f'R^2 = {g.analyzer.get_r_sq(g.modeller.logistic(0))}'
           else:
             g.debug.prn(self, 'Logistic model has not been generated.', 1)
             return
