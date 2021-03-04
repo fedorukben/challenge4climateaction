@@ -87,6 +87,12 @@ class Analyzer(object):
     for x in x_vals:
       sst += (x - x_av) ** 2
     return sst / len(x_vals)
+  def get_variance_by_parts(self, f, x_vals):
+    x_av = np.mean(x_vals)
+    sst = 0
+    for x in x_vals:
+      sst += (x - x_av) ** 2
+    return sst / len(x_vals)
   def get_r_sq(self, model):
     y_av = np.mean(model.get_training_y())
     f = model.get_f()

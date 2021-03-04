@@ -343,6 +343,9 @@ class Console(object):
         elif body == 'lo-reg':
           g.modeller.get_logistic(g.x, g.y)
           g.debug.prn(self, 'Generated logistic regression.')
+        elif body == 'ri-reg':
+          g.modeller.get_ridge(g.x, g.y)
+          g.debug.prn(self, 'Generated ridge regression.')
         elif body == 'g':
           for v in g.visuals.values():
             if not v == 'p':

@@ -28,6 +28,7 @@ visuals = {
   'Least Squares - F-Distribution': 'ls-f',
   'Least Squares - Sum of Squared Residuals': 'ls-ssr',
   'Logistic - Regression': 'lo-reg',
+  'Ridge - Regression': 'ri-reg',
 }
 graph_titles = {
   'main': 'Main Graph',
@@ -38,6 +39,7 @@ files = {
   'least-squares-f': 'imgs/ls-f.png',
   'ls-ssr': 'imgs/ls-ssr.png',
   'logistic-regression': "imgs/lo-reg.png",
+  'ridge-regression': 'imgs/ri-reg.png',
 }
 stats_to_codes = {
   'Least Squares - Slope': 'ls-a',
