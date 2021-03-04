@@ -217,61 +217,82 @@ class DataSet(object):
     # return [1,2,5,3,0,-4]
   def get_rows(self, indices):
     if type(indices) != list:
+       g.debug.prn(self, "Got single row.")
       return self.data[indices].tolist()
     if indices == []:
-      g.debug.prn(self, "You need to pass something into get_cols().", 1)
+      g.debug.prn(self, "You need to pass something into get_rows().", 1)
     lst = [] # [[datafromc1], [datafromc2]]
     for row in indices:
       lst.append(self.data[row].tolist())
+     g.debug.prn(self, "Got list of rows")
     return lst
   def get_input_cols(self): # dependant variables
     self.get_cols(self.get_label()[:-1])
+    g.debug.prn(self, "Importing dependant variables.")
   def get_output_col(self): # independant variables
     self.get_cols(self.get_label()[-1])
+    g.debug.prn(self, "Importing independant variables.")
   def get_label(self):
+    g.debug.prn(self, "Returning labels.")
     return list(self.data)
     # ["Temp", "Sea Level Rise"]
   def get_data(self):
+    g.debug.prn(self, "Importing data.")
     return self.get_cols(self.get_label())
   def get_datum(self, col_names, indices): #TODO:
     if type(indices) != list and type(col_names) != list:
+      g.debug.prn(self, "Got datum.")
       return self.get_cols(col_names)[indices]
     lst = []
     for col, index in zip(col_names, indices):
       lst.append(self.get_cols(col)[index])
+      g.debug.prn(self, "Got data.")
     return lst
     # dataset.get_datum(["x2", "x1"],[5, 3])
     # --> [-9, 3]
 # https://towardsdatascience.com/the-ultimate-guide-to-data-cleaning-3969843991d4
 class Cleaner(object):
   def __init__(self):
-    pass
+    self.data = pd.DataFrame(data)
+    g.debug.prn(self, "Data Cleaner initialized.")
   def class_name(self):
     return "Cleaner"
   def delete_rows(self, ds, rows):
+    
+    g.debug.prn(self, "Deleting problem row")
     for row in rows:
-      pass
+      g.debug.prn(self, "Deleting problem rows.")
+      drop
       # Delete row code.
   def replace_values(self, ds):
+    g.debug.prn(self, "Replacing values.")
     pass
   def reformat(self, ds):
+    g.debug.prn(self, "Reformatting data.")
     pass
   def delete_duplicates(self, ds):
+    g.debug.prn(self, "Deleting duplicate data.")
     pass
   def convert_types(self, ds, type_to):
+    g.debug.prn(self, "Converting data.")
     pass
   def workflow(self, ds):
+    g.debug.prn(self, "Running diagnostics.")
     self._inspect(ds)
     self._clean(ds)
     self._verify(ds)
     self._report(ds)
   def _inspect(self, ds):
+    g.debug.prn(self, "Inspecting data.")
     pass
   def _clean(self, ds):
+    g.debug.prn(self, "Cleaning data.")
     pass
   def _verify(self, ds):
+    g.debug.prn(self, "Verifying results.")
     pass
   def _report(self, ds):
+    g.debug.prn(self, "Reporting")
     pass
 
 
