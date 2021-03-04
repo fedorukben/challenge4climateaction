@@ -274,7 +274,7 @@ class GenerateVisualPopUp(PopUp):
     self.layout = [
       [sg.Text(self.text)],
       [sg.Combo([*g.visuals], key='Combo')],
-      [sg.Button('Submit')]
+      [sg.Button('Submit'), sg.Button('All')]
     ]
     self.window = sg.Window(self.title, self.layout)
     g.debug.prn(self, 'Message shown.')
@@ -293,6 +293,9 @@ class GenerateVisualPopUp(PopUp):
           break
         else:
           g.debug.prn(self, 'No visual selected.', 1)
+      elif event == 'All':
+        g.console.read(f'g:g')
+        break
 
 class Console(object):
   def __init__(self):
@@ -340,6 +343,11 @@ class Console(object):
         elif body == 'lo-reg':
           g.modeller.get_logistic(g.x, g.y)
           g.debug.prn(self, 'Generated logistic regression.')
+        elif body == 'g':
+          for v in g.visuals.values():
+            if not v == 'p':
+              self.read(f'g:{v}')
+          g.debug.prn(self, 'All visuals generated.')
         else:
           g.debug.prn(self, 'File to generate not recognized.')
           return
@@ -361,7 +369,13 @@ class Console(object):
           if os.path.exists(g.files['least-squares']):
             text = f'yint = {g.modeller.linear(0).get_yint()}'
           else:
-            g.debug.prn(self, 'Least Squares model has not beeng generated.', 1)
+            g.debug.prn(self, 'Least Squares model has not been generated.', 1)
+            return
+        elif body == 'ls-rsq':
+          if os.path.exists(g.files['least-squares']):
+            text = f'yint = {g.analyzer.get_r_sq(g.modeller.linear(0))}'
+          else:
+            g.debug.prn(self, 'Least Squares model has not been generated.', 1)
             return
         elif body == 'specif':
           text = f'specificity = {g.analyzer.get_specificity()}'

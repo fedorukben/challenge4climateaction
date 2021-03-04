@@ -102,14 +102,14 @@ class Analyzer(object):
   def get_variance(self, coords, f):
     return self.get_ss_res(coords, f) / len(coords[0])
   def get_r_sq(self, model):
-    f_mean = lambda x : np.average(model.training_x)
-    x = model.get_training_x()
-    y = model.get_training_y()
+    y_av = np.mean(model.get_training_y())
     f = model.get_f()
-    var_mean = self.get_variance(zip(x, y), f_mean)
-    var_fit = self.get_variance(zip(x, y), f)
-    g.debug.prn(self, 'R squared calculated.')
-    return (var_mean - var_fit) / var_mean
+    ss_res = 0
+    ss_tot = 0
+    for x, y in zip(model.get_training_x(), model.get_training_y()):
+      ss_res += (y - f(x)) ** 2
+      ss_tot += (y - y_av) ** 2
+    return 1 - (ss_res / ss_tot)
   def plot_roc(self):
     plotter = Plotter()
     plotter.set_title('Receiver Operating Characteristic')
@@ -217,14 +217,14 @@ class DataSet(object):
     # return [1,2,5,3,0,-4]
   def get_rows(self, indices):
     if type(indices) != list:
-       g.debug.prn(self, "Got single row.")
+      g.debug.prn(self, "Got single row.")
       return self.data[indices].tolist()
     if indices == []:
       g.debug.prn(self, "You need to pass something into get_rows().", 1)
     lst = [] # [[datafromc1], [datafromc2]]
     for row in indices:
       lst.append(self.data[row].tolist())
-     g.debug.prn(self, "Got list of rows")
+      g.debug.prn(self, "Got list of rows")
     return lst
   def get_input_cols(self): # dependant variables
     self.get_cols(self.get_label()[:-1])
@@ -258,7 +258,7 @@ class Cleaner(object):
   def class_name(self):
     return "Cleaner"
   def delete_rows(self, ds, rows):
-    
+
     g.debug.prn(self, "Deleting problem row")
     for row in rows:
       g.debug.prn(self, "Deleting problem rows.")
