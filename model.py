@@ -94,11 +94,11 @@ class LinearModel(Model):
   def class_name(self):
     return "LinearModel"
   def get_sum_of_squared_residuals(self):
-    ss_residuals_av = 0
+    ss_residuals = 0
     for x,y in zip(self.training_x, self.training_y):
-      ss_residuals_av += math.abs(y - self.f(x)) ** 2
+      ss_residuals += math.abs(y - self.f(x)) ** 2
     g.debug.prn(self, 'SS Residuals gotten.')
-    return ss_residuals_av
+    return ss_residuals
   def get_slope(self):
     g.debug.prn(self, 'Got slope.', 3)
     return (self.f(self.training_x[0]) - self.f(self.training_x[1])) / (self.training_x[0] - self.training_x[1])
@@ -209,6 +209,91 @@ class RidgeModel(LinearModel):
     g.debug.prn(self, 'RidgeModel created')
   def class_name(self):
     return "RidgeModel"
+  def regularize(self):
+    y_av = np.mean(self.training_y)
+    x_av = np.mean(self.training_x)
+    lambda_ridge = 0
+    tr_x = self.training_x[:math.floor(len(self.training_x) / 10)]
+    te_x = self.training_x[math.ceil(len(self.training_x) / 10):]
+    variance = g.analyzer.get_variance_by_parts(self.f, tr_x)
+    bias = g.analyzer.get_variance_by_parts(self.f, te_x)
+    prev_epsilon = variance + bias ** 2
+    while True:
+      lambda_ridge += 0.1 * lambda_ridge
+      m = self.get_slope()
+      b = self.get_yint()
+      f = lambda x : lambda_ridge * m * x + lambda_ridge * b + epsilon
+      variance = g.analyzer.get_variance_by_parts(f, tr_x)
+      bias = g.analyzer.get_variance_by_parts(f, te_x)
+      epsilon = variance + bias ** 2
+      print(f'Lambda: {lambda_ridge}, Epsilon: {epsilon}')
+      if prev_epsilon <= epsilon:
+        self.f = f
+        break
+  def set_slope(self, slope):
+    yint = self.get_yint()
+    self.f = lambda x : slope * x + yint
+  def set_yint(self, yint):
+    slope = self.get_slope()
+    self.f = lambda x : slope * x + yint
+  def plot(self):
+    plotter = Plotter()
+    image_manager = ImageManager()
+    sketches = []
+    plotter.set_output_filename(g.files['ridge-regression'])
+    plotter.set_title('Ridge Regression')
+    g.debug.prn(self, 'Plot basics set.')
+
+    min_x = min(self.training_x)
+    max_x = max(self.training_x)
+    x_vals = []
+    y_vals = []
+    for x in range(min_x * 100, max_x * 100):
+      x_vals.append([x / 100])
+      y_vals.append([self.f(x / 100)])
+    sketches.append(SmoothSketch())
+    sketches[-1].add_x(x_vals)
+    sketches[-1].add_y(y_vals)
+    g.debug.prn(self, 'Linear curve saved as SmoothSketch.')
+
+    sketches.append(ScatterSketch())
+    sketches[-1].add_x(list(self.training_x))
+    sketches[-1].add_y(list(self.training_y))
+    g.debug.prn(self, 'Points saved as ScatterSketch.')
+
+    for i in range(len(self.training_x)):
+      if self.f(self.training_x[i]) > self.training_y[i]:
+        y_max = self.f(self.training_x[i])
+        y_min = self.training_y[i]
+      else:
+        y_min = self.f(self.training_x[i])
+        y_max = self.training_y[i]
+      sketches.append(VerticalLineSketch())
+      sketches[-1].set_y_max(y_max)
+      sketches[-1].set_y_min(y_min)
+      sketches[-1].set_x(self.training_x[i])
+      g.debug.prn(self, 'Vertical line appended.', 3)
+    g.debug.prn(self, 'SSR lines drawn as VerticalLineSketch(s).')
+
+    plotter.load(sketches)
+    plotter.save()
+    plotter.close()
+    g.debug.prn(self, 'All sketches loaded and saved.')
+
+    image_manager.scale(g.files['ridge-regression'], g.files['ridge-regression'], 250)
+
+    del plotter
+    del image_manager
+    g.debug.prn(self, 'Plotter and ImageManager objects deleted', 3)
+
+class LassoModel(LinearModel):
+  def __init__(self, f, training_x, training_y, index):
+    super().__init__(f, training_x, training_y, index)
+    self.math = Math()
+    self.regularize()
+    g.debug.prn(self, 'LassoModel created')
+  def class_name(self):
+    return "LassoModel"
   def regularize(self):
     y_av = np.mean(self.training_y)
     x_av = np.mean(self.training_x)
