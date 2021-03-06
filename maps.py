@@ -66,6 +66,7 @@ class MillerCylindricalProjection(Projection):
     super().__init__('mill', resolution)
     self.lower = lower
     self.upper = upper
+    g.debug.prn(self, 'Projection initialized.')
   def class_name(self):
     return 'MillerCylindricalProjection'
   def set_lower(self, lower):
@@ -82,6 +83,29 @@ class MillerCylindricalProjection(Projection):
                 urcrnrlat = self.upper.get_lat(),
                 llcrnrlon = self.lower.get_lon(),
                 urcrnrlon = self.upper.get_lon(),
+                resolution = self.res)
+    return m
+
+class PolarAzimuthalEquidistantProjection(Projection):
+  def __init__(self, resolution='l', six_o_clock=Geo2(10, 270), pole = 'n'):
+    if not pole in 'ns':
+      g.debug.prn(self, 'Invalid pole specified', 1)
+    super().__init__(f'{pole}paeqd', resolution)
+    self.six_o_clock = six_o_clock
+    self.pole = pole
+    g.debug.prn(self, 'Projection initialized.')
+  def class_name(self):
+    return 'MillerCylindricalProjection'
+  def set_six_o_clock(self, six_o_clock):
+    self.six_o_clock = six_o_clock
+  def get_six_o_clock(self):
+    return self.six_o_clock
+  def get_pole(self):
+    return self.pole
+  def generate(self):
+    m = Basemap(projection=self.proj,
+                boundinglat = self.six_o_clock.get_lat(),
+                lon_0 = self.six_o_clock.get_lon(),
                 resolution = self.res)
     return m
 

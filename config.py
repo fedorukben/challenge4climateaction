@@ -31,6 +31,8 @@ visuals = {
   'Ridge - Regression': 'ri-reg',
   'Miller Cylindrical': 'map-mill',
   'Orthographic': 'map-ortho',
+  'North Polar Azimuthal Equidistant': 'map-npaeqd',
+  'South Polar Azimuthal Equidistant': 'map-spaeqd',
 }
 graph_titles = {
   'main': 'Main Graph',

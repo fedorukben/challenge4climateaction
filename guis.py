@@ -2,6 +2,7 @@ import PySimpleGUI as sg
 from model import LinearModel
 from maps import MillerCylindricalProjection
 from maps import OrthographicProjection
+from maps import PolarAzimuthalEquidistantProjection
 import os
 import config as g
 
@@ -333,7 +334,13 @@ class Console(object):
           g.debug.prn(self, 'Generated Miller cylindrical map.')
         elif body == 'map-ortho':
           g.mapper.default(OrthographicProjection())
-          g.debug.prn(self, 'Generated Orthographic map.')
+          g.debug.prn(self, 'Generated orthographic map.')
+        elif body == 'map-npaeqd':
+          g.mapper.default(PolarAzimuthalEquidistantProjection())
+          g.debug.prn(self, 'Generated north polar azimuthal equidistant map.')
+        elif body == 'map-spaeqd':
+          g.mapper.default(PolarAzimuthalEquidistantProjection(pole='s'))
+          g.debug.prn(self, 'Generated south polar azimuthal equidistant map.')
         elif body == 'g':
           for v in g.visuals.values():
             if not v == 'p':
