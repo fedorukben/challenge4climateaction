@@ -1,27 +1,9 @@
 import PySimpleGUI as sg
 from model import LinearModel
+from maps import MillerCylindricalProjection
+from maps import OrthographicProjection
 import os
 import config as g
-
-'''
-
-layout =
-[
-  [text("MatPlotLib Figure")],
-  [image("plot.png")],
-  [button("Exit"), button("Submit")]
-]
-
-event == "Exit"
-
-input("Name")
-if event == "Name":
-  if values[0] == "Ben Fedoruk":
-    print("This man is a god")
-  else:
-    print("This is a normal man")
-
-'''
 
 class GUI(object):
   def __init__(self, plotter, analyzer, modeller):
@@ -346,9 +328,12 @@ class Console(object):
         elif body == 'ri-reg':
           g.modeller.get_ridge(g.x, g.y)
           g.debug.prn(self, 'Generated ridge regression.')
-        elif body == 'map':
-          g.mapper.default()
-          g.debug.prn(self, 'Generated map.')
+        elif body == 'map-mill':
+          g.mapper.default(MillerCylindricalProjection())
+          g.debug.prn(self, 'Generated Miller cylindrical map.')
+        elif body == 'map-ortho':
+          g.mapper.default(OrthographicProjection())
+          g.debug.prn(self, 'Generated Orthographic map.')
         elif body == 'g':
           for v in g.visuals.values():
             if not v == 'p':

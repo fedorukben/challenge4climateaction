@@ -29,7 +29,8 @@ visuals = {
   'Least Squares - Sum of Squared Residuals': 'ls-ssr',
   'Logistic - Regression': 'lo-reg',
   'Ridge - Regression': 'ri-reg',
-  'Map': 'map'
+  'Miller Cylindrical': 'map-mill',
+  'Orthographic': 'map-ortho',
 }
 graph_titles = {
   'main': 'Main Graph',

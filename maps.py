@@ -52,6 +52,14 @@ class OrthographicProjection(Projection):
     return 'OrthographicProjection'
   def set_center(self, center):
     self.center = center
+  def get_center(self):
+    return self.center
+  def generate(self):
+    m = Basemap(projection=self.proj,
+                lat_0 = self.center.get_lat(),
+                lon_0 = self.center.get_lon(),
+                resolution = self.res)
+    return m
 
 class MillerCylindricalProjection(Projection):
   def __init__(self, resolution='l', lower=Geo2(-90, -180), upper=Geo2(90, 180)):
@@ -96,9 +104,9 @@ class Mapper(Plotter):
       return
     self.m = self.proj.generate()
     g.debug.prn(self, 'Basemap generated.')
-  def default(self):
+  def default(self, proj):
     image_manager = ImageManager()
-    self.load_proj(MillerCylindricalProjection())
+    self.load_proj(proj)
     self.generate_basemap()
     self.draw_coast()
     plt.savefig(f'imgs/map-{self.index}.png')
