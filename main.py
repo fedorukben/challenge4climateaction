@@ -14,6 +14,8 @@ from analyze import Analyzer
 from visualize import Plotter
 from visualize import ScatterSketch
 
+from maps import Mapper
+
 import config as g
 
 import sys
@@ -26,6 +28,7 @@ def init_globals():
   g.modeller = Modeller(g.analyzer)
   g.gui = GUI(plotter, g.analyzer, g.modeller)
   g.output_file_formatter = OutputFileFormatter()
+  g.mapper = Mapper()
 
 def gen_plot():
   plotter.set_title(g.graph_titles['main'])

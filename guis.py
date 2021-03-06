@@ -346,6 +346,9 @@ class Console(object):
         elif body == 'ri-reg':
           g.modeller.get_ridge(g.x, g.y)
           g.debug.prn(self, 'Generated ridge regression.')
+        elif body == 'map':
+          g.mapper.default()
+          g.debug.prn(self, 'Generated map.')
         elif body == 'g':
           for v in g.visuals.values():
             if not v == 'p':
