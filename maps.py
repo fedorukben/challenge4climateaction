@@ -3,6 +3,29 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 import numpy as np
 from visualize import Plotter
+from utils import ImageManager
+
+class Geo2(object):
+  def __init__(self, lat, lon):
+    self.lat = lat
+    self.lon = lon
+  def __str__(self):
+    return f'({self.lat}, {self.lon})'
+  def class_name(self):
+    return 'Geo2'
+  def get_lat(self):
+    return self.lat
+  def get_lon(self):
+    return self.lon
+  def set_lat(self, lat):
+    self.lat = lat
+  def set_lon(self, lon):
+    self.lon = lon
+  def get_pair(self):
+    return self.lat, self.lon
+  def set_pair(self, lat, lon):
+    self.lat = lat
+    self.lon = lon
 
 class Projection(object):
   def __init__(self, projection, resolution='l'):
@@ -12,39 +35,46 @@ class Projection(object):
     return 'Projection'
   def get_resolution(self):
     return self.res
+  def set_resolution(self, res):
+    self.res = res
+    g.debug.prn(self, 'Set resolution.', 3)
   def get_projection(self):
     return self.proj
   def generate(self):
     g.debug.prn(self, 'Cannot call generate() on abstract Projection.', 1)
 
 class OrthographicProjection(Projection):
-  def __init__(self, resolution='l'):
+  def __init__(self, resolution='l', center=Geo2(0, 0)):
     super().__init__('ortho', resolution)
+    self.center = center
     g.debug.prn(self, 'Projection initialized.')
   def class_name(self):
     return 'OrthographicProjection'
+  def set_center(self, center):
+    self.center = center
 
 class MillerCylindricalProjection(Projection):
-  def __init__(self, resolution='l', corners=[-90, 90, -180, 180]):
+  def __init__(self, resolution='l', lower=Geo2(-90, -180), upper=Geo2(90, 180)):
     super().__init__('mill', resolution)
-    self.corners = corners
-    g.debug.prn(self, 'Projection initialized.')
+    self.lower = lower
+    self.upper = upper
   def class_name(self):
     return 'MillerCylindricalProjection'
-  def set_resolution(self, resolution):
-    self.resolution = resolution
-    g.debug.prn(self, 'Set resolution.', 3)
-  def set_corners(self, corners):
-    self.corners = corners
-    g.debug.prn(self, 'Set corners.', 3)
+  def set_lower(self, lower):
+    self.lower = lower
+  def get_lower(self):
+    return self.lower
+  def set_upper(self, upper):
+    self.upper = upper
+  def get_upper(self):
+    return self.upper
   def generate(self):
     m = Basemap(projection=self.proj,
-                llcrnrlat = self.corners[0],
-                urcrnrlat = self.corners[1],
-                llcrnrlon = self.corners[2],
-                urcrnrlon = self.corners[3],
+                llcrnrlat = self.lower.get_lat(),
+                urcrnrlat = self.upper.get_lat(),
+                llcrnrlon = self.lower.get_lon(),
+                urcrnrlon = self.upper.get_lon(),
                 resolution = self.res)
-    g.debug.prn(self, 'Generated projection.')
     return m
 
 class Mapper(Plotter):
@@ -53,6 +83,8 @@ class Mapper(Plotter):
     self.proj = proj
     self.get_m_warning_enabled = True
     self.line_thickness = 0.25
+    self.index = 0
+    self.color = 'black'
     g.debug.prn(self, 'Mapper object created.')
   def class_name(self):
     return 'Mapper'
@@ -65,10 +97,13 @@ class Mapper(Plotter):
     self.m = self.proj.generate()
     g.debug.prn(self, 'Basemap generated.')
   def default(self):
+    image_manager = ImageManager()
     self.load_proj(MillerCylindricalProjection())
     self.generate_basemap()
     self.draw_coast()
-    plt.savefig('imgs/map.png')
+    plt.savefig(f'imgs/map-{self.index}.png')
+    image_manager.scale(f'imgs/map-{self.index}.png', f'imgs/map-{self.index}.png', 250)
+    self.index += 1
     plt.close()
   def draw_coast(self):
     self.m.drawcoastlines(linewidth = self.line_thickness)
@@ -85,6 +120,11 @@ class Mapper(Plotter):
   def draw_rivers(self):
     self.m.drawrivers(linewidth = self.line_thickness)
     g.debug.prn(self, 'Rivers drawn.')
+  def set_color(self, color):
+    self.color = color
+    g.debug.prn(self, 'Set color.')
+  def get_color(self):
+    return self.color
   def set_line_thickness(self, line_thickness):
     self.line_thickness = line_thickness
     g.debug.prn(self, 'Line thickness set.')
