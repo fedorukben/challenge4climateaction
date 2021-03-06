@@ -116,7 +116,6 @@ class GUI(object):
             popup.close()
           elif event == 'Map':
             popup = MapConfigureGUI('Map Configuration')
-            popup.set_text('Welcome to the map configuration menu.\nNothing here for now!')
             popup.show()
             popup.loop()
             popup.close()
@@ -287,22 +286,68 @@ class GenerateVisualPopUp(PopUp):
         g.console.read(f'g:g')
         break
 
+class MapTypePopUp(PopUp):
+  def __init__(self):
+    self.val = None
+    self.i = 0
+    g.debug.prn(self, 'MapTypePopUp created.')
+  def show(self):
+    self.layout = [
+      [sg.Text('Select map type:')]
+    ]
+    for proj_name in g.proj_names:
+      self.i += 1
+      self.layout.append([sg.Radio(proj_name, 'RADIO', default=False, key=f"In{self.i}")])
+    self.layout.append([sg.Button('Submit')])
+    self.window = sg.Window('Map Type Selector', self.layout)
+    g.debug.prn(self, 'Map type selector popped up.')
+  def loop(self):
+    g.debug.prn(self, 'Loop commenced.')
+    while True:
+      event, values = self.window.read()
+      if event == sg.WIN_CLOSED:
+        self.close()
+        break
+      elif event == 'Submit' and (values['In1'] or values['In2'] or values['In3']):
+        for j in range(self.i, 0, -1):
+          if values[f'In{j}']:
+            self.val = g.proj_names[j - 1]
+        break
+  def get_val(self):
+    if self.val == None:
+      g.debug.prn(self, 'The value has not been selected.')
+      return
+    return self.val
+  def close(self):
+    self.window.close()
+    g.debug.prn(self, 'MapTypePopUp closed.')
+
 class MapConfigureGUI(object):
   def __init__(self, title):
     self.title = title
-    self.text = None
+    self.map_type = 'None'
     g.debug.prn(self, 'MapConfigureGUI created.')
   def class_name(self):
     return 'MapConfigurePopUp'
-  def set_text(self, text):
-    self.text = text
-    g.debug.prn(self, 'Text set.')
-  def get_text(self):
-    return self.text
+  def set_map_type(self, map_type):
+    self.map_type = map_type
+    g.debug.prn(self, 'Map type set.')
+  def get_map_type(self):
+    return self.map_type
   def show(self):
     self.layout = [
-      [sg.Text(self.text)]
+      [sg.Text("Map Configuration")],
+      [sg.Text(f'Map Type: {self.map_type}')]
     ]
+    if self.map_type == 'OrthographicProjection':
+      pass
+    elif self.map_type == 'MillerCylindricalProjection':
+      pass
+    elif self.map_type == 'PolarAzimuthalEquidistantProjection':
+      pass
+    else:
+      self.layout.append([sg.Button('Map Type')])
+    self.layout.append([sg.Button('Submit')])
     self.window = sg.Window(self.title, self.layout)
     g.debug.prn(self, 'GUI shown.')
   def loop(self):
@@ -310,6 +355,23 @@ class MapConfigureGUI(object):
     while True:
       event, values = self.window.read()
       if event == sg.WIN_CLOSED:
+        self.close()
+        break
+      elif event == 'Map Type':
+        popup = MapTypePopUp()
+        popup.show()
+        popup.loop()
+        self.map_type = popup.get_val()
+        popup.close()
+        self.close()
+        self.show()
+      elif event == 'Submit':
+        if self.map_type == 'None':
+          g.debug.prn(self, 'Cannot create map of type \'None\'.', 1)
+          continue
+        g.map_config['map_type'] = self.map_type
+        g.debug.prn(self, 'Submitted map configurations.')
+        g.console.read('g:map')
         self.close()
         break
   def close(self):
@@ -377,6 +439,15 @@ class Console(object):
         elif body == 'map-spaeqd':
           g.mapper.default(PolarAzimuthalEquidistantProjection(pole='s'))
           g.debug.prn(self, 'Generated south polar azimuthal equidistant map.')
+        elif body == 'map':
+          if g.map_config['map_type'] == 'Orthographic':
+            g.console.read('g:map-ortho')
+          elif g.map_config['map_type'] == 'Miller Cylindrical':
+            g.console.read('g:map-mill')
+          elif g.map_config['map_type'] == 'Polar Azimuthal Equidistant':
+            g.console.read('g:map-npaeqd')
+          else:
+            g.debug.prn(self, 'Map type not recognized.', 1)
         elif body == 'g':
           for v in g.visuals.values():
             if not v == 'p':

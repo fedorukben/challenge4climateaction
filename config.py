@@ -22,6 +22,14 @@ gui = None
 image_height = 250
 gui_title = 'Shell UI'
 interactive_mode = True
+map_config = {
+  'map_type': None,
+}
+proj_names = [
+  'Orthographic',
+  'Miller Cylindrical',
+  'Polar Azimuthal Equidistant',
+]
 visuals = {
   'Main Graph': 'p',
   'Least Squares - Regression': 'ls-reg',
@@ -29,10 +37,6 @@ visuals = {
   'Least Squares - Sum of Squared Residuals': 'ls-ssr',
   'Logistic - Regression': 'lo-reg',
   'Ridge - Regression': 'ri-reg',
-  'Miller Cylindrical': 'map-mill',
-  'Orthographic': 'map-ortho',
-  'North Polar Azimuthal Equidistant': 'map-npaeqd',
-  'South Polar Azimuthal Equidistant': 'map-spaeqd',
 }
 graph_titles = {
   'main': 'Main Graph',
