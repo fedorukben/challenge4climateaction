@@ -31,6 +31,7 @@ class GUI(object):
       self.button('Display')
       self.button('Peek')
       self.button('Generate')
+      self.button('Map')
       self.next()
       self.button('Exit Program')
       self.button('Exit Interactive Mode')
@@ -110,6 +111,12 @@ class GUI(object):
           elif event == 'Generate':
             popup = GenerateVisualPopUp('Generate Visual')
             popup.set_text('Select visual to generate:')
+            popup.show()
+            popup.loop()
+            popup.close()
+          elif event == 'Map':
+            popup = MapConfigureGUI('Map Configuration')
+            popup.set_text('Welcome to the map configuration menu.\nNothing here for now!')
             popup.show()
             popup.loop()
             popup.close()
@@ -279,6 +286,35 @@ class GenerateVisualPopUp(PopUp):
       elif event == 'All':
         g.console.read(f'g:g')
         break
+
+class MapConfigureGUI(object):
+  def __init__(self, title):
+    self.title = title
+    self.text = None
+    g.debug.prn(self, 'MapConfigureGUI created.')
+  def class_name(self):
+    return 'MapConfigurePopUp'
+  def set_text(self, text):
+    self.text = text
+    g.debug.prn(self, 'Text set.')
+  def get_text(self):
+    return self.text
+  def show(self):
+    self.layout = [
+      [sg.Text(self.text)]
+    ]
+    self.window = sg.Window(self.title, self.layout)
+    g.debug.prn(self, 'GUI shown.')
+  def loop(self):
+    g.debug.prn(self, 'Loop commenced.')
+    while True:
+      event, values = self.window.read()
+      if event == sg.WIN_CLOSED:
+        self.close()
+        break
+  def close(self):
+    self.window.close()
+    g.debug.prn(self, 'MapConfigureGUI closed.')
 
 class Console(object):
   def __init__(self):
