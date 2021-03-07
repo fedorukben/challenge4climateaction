@@ -8,6 +8,7 @@ import numpy as np
 import config as g
 from sklearn.metrics import confusion_matrix
 
+print("Hello you")
 
 class Analyzer(object):
   def __init__(self):
