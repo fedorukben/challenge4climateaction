@@ -291,6 +291,8 @@ class MapTypePopUp(PopUp):
     self.val = None
     self.i = 0
     g.debug.prn(self, 'MapTypePopUp created.')
+  def class_name(self):
+    return 'MapTypePopUp'
   def show(self):
     self.layout = [
       [sg.Text('Select map type:')]
@@ -322,6 +324,45 @@ class MapTypePopUp(PopUp):
     self.window.close()
     g.debug.prn(self, 'MapTypePopUp closed.')
 
+class MapLinesPopUp(PopUp):
+  def __init__(self):
+    self.val = None
+    self.i = 0
+    g.debug.prn(self, 'MapLinesPopUp created.')
+  def class_name(self):
+    return 'MapLinesPopUp'
+  def show(self):
+    self.layout = [
+      [sg.Text('Select lines to draw:')],
+      [sg.Checkbox('Country Borders', default=False, key='Countries')],
+      [sg.Checkbox('State Borders', default=False, key='States')],
+      [sg.Checkbox('County Borders', default=False, key='Counties')],
+      [sg.Checkbox('River Lines', default=False, key='Rivers')],
+      [sg.Checkbox('Coast Lines', default=False, key='Coasts')],
+      [sg.Button('Submit')]
+    ]
+    self.window = sg.Window('Map Type Selector', self.layout)
+    g.debug.prn(self, 'Map lines selector popped up.')
+  def loop(self):
+    g.debug.prn(self, 'Loop commenced.')
+    while True:
+      event, values = self.window.read()
+      if event == sg.WIN_CLOSED:
+        self.close()
+        break
+      elif event == 'Submit':
+        pass
+  def get_val(self):
+    if self.val == None:
+      g.debug.prn(self, 'The value has not been selected.')
+      return
+    return self.val
+  def close(self):
+    self.window.close()
+    g.debug.prn(self, 'MapTypePopUp closed.')
+
+
+
 class MapConfigureGUI(object):
   def __init__(self, title):
     self.title = title
@@ -339,11 +380,11 @@ class MapConfigureGUI(object):
       [sg.Text("Map Configuration")],
       [sg.Text(f'Map Type: {self.map_type}')]
     ]
-    if self.map_type == 'OrthographicProjection':
+    if self.map_type == 'Orthographic':
       pass
-    elif self.map_type == 'MillerCylindricalProjection':
-      pass
-    elif self.map_type == 'PolarAzimuthalEquidistantProjection':
+    elif self.map_type == 'Miller Cylindrical':
+      self.layout.append([sg.Button('Map Type'), sg.Button('Lines')])
+    elif self.map_type == 'Polar Azimuthal Equidistant':
       pass
     else:
       self.layout.append([sg.Button('Map Type')])
